@@ -524,7 +524,7 @@ class MyFrame extends JFrame implements RemotePIMCollection {
 				cal.set(Calendar.MONTH,cal.get(Calendar.MONTH) - 1);
 				monthy.setText(Cal.MONTHS[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR));
 				try {
-					monthJ.refresh(cal, getAll());
+					monthJ.refresh();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -538,7 +538,7 @@ class MyFrame extends JFrame implements RemotePIMCollection {
 				cal.set(Calendar.MONTH,cal.get(Calendar.MONTH) + 1);
 				monthy.setText(Cal.MONTHS[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR));
 				try {
-					monthJ.refresh(cal, getAll());
+					monthJ.refresh();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -595,15 +595,16 @@ class MyFrame extends JFrame implements RemotePIMCollection {
     }
     
     class monthJPanel extends JPanel {
-    	public monthJPanel(Calendar cal, PIMCollection collection) {
+    	public monthJPanel(Calendar cal, PIMCollection collection) throws Exception {
             super(new GridLayout(6,7,1,1));
-            refresh(cal, collection);
+            refresh();
     	}
-    	void refresh(Calendar cal, PIMCollection collection) {
+    	void refresh() throws Exception {
     		this.removeAll();
             int[][] monthDay;
 			try {
 				monthDay = Cal.printCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH)+1);
+				PIMCollection monthItem = new PIMCollection();
 				for (int i = 0; i < 6; i++) {
 					for (int j = 0; j < 7; j++) {
 						JLabel jLabel;
@@ -611,12 +612,31 @@ class MyFrame extends JFrame implements RemotePIMCollection {
 							jLabel = new JLabel("");
 						}
 						else {
-							jLabel = new JLabel("" + monthDay[i][j],JLabel.CENTER);
+							String text = " ";
+							monthItem.clear();
+							text += monthDay[i][j] + " \n";
+							cal.set(Calendar.DAY_OF_MONTH,monthDay[i][j]);
+							Date d = df.parse(df.format(cal.getTime()));
+							monthItem = getItemsForDate(d);
 							
+							
+							for (int k = 0; k < monthItem.size(); k++) {
+								Object obj = monthItem.get(k);
+								if(obj instanceof PIMTodo) {
+									PIMTodo todo = (PIMTodo)obj;
+									text += todo.todoText + "\n";
+								}
+								else if(obj instanceof PIMAppointment) {
+									PIMAppointment appoint = (PIMAppointment)obj;
+									text += appoint.description + "\n";
+								}
+							}
+							System.out.println(text);
+							jLabel = new JLabel(text,JLabel.CENTER);
 						}
 						jLabel.setBorder(new LineBorder(Color.YELLOW));
-						jLabel.setBackground(Color.white);
 						this.add(jLabel);
+						cal.set(Calendar.DAY_OF_MONTH,1);
 					}
 				}
 			} catch (ParseException e) {
@@ -633,6 +653,7 @@ class MyFrame extends JFrame implements RemotePIMCollection {
         gConstraints.weighty = 700;
         gConstraints.weightx = 700;
         monthJ = new monthJPanel(cal,getAll());
+        monthJ.setBackground(Color.white);
         this.add(monthJ,gConstraints);
     }
 }

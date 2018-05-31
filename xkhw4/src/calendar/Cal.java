@@ -45,12 +45,12 @@ public class Cal {
         calendarEnd.setTime(sd.parse(dateEndStr));
 
         int weeks = calendarEnd.get(Calendar.WEEK_OF_MONTH);
-        int dayOfWeek = calendarStart.get(Calendar.DAY_OF_WEEK)%7;
+        int dayOfWeek = calendarStart.get(Calendar.DAY_OF_WEEK);
         int day = 1;
         int[][] monthDay = new int[6][7];
-        for(int i=0;i<7;i++){
+        for(int i=1;i<=7;i++){
             if(i>=dayOfWeek){
-            	monthDay[0][i] = day;
+            	monthDay[0][i-1] = day;
                 System.out.print(" "+day+"  ");
                 day++;
             } else{

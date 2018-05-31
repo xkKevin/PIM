@@ -1,6 +1,7 @@
-Item 1 :TODO xk public urgent 05/28/2018 Submit Java homework.
+Item 1 :TODO xk public urgent 28/05/2018 Submit Java homework.
 Item 2 :CONTACT xk private ordinary Xiong Kai call you
-Item 3 :APPOINTMENT a public negligible 06/01/2018 Eat dinner
+Item 3 :APPOINTMENT a public negligible 01/06/2018 Eat dinner
 Item 4 :NOTE a private  urgent Prepare the Java examination
-Item 5:APPOINTMENT a private important 06/01/2018 Study hard
-Item 6:APPOINTMENT xk private important 06/01/2018 Study hard
+Item 5 :APPOINTMENT a private important 02/06/2018 Study hard
+Item 6 :APPOINTMENT xk private important 01/06/2018 Study hard
+Item 7 :TODO xk public urgent 12/06/2018 Java final exam.
