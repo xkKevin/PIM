@@ -4,4 +4,8 @@ Item 3 :APPOINTMENT a public negligible 01/06/2018 Eat dinner
 Item 4 :NOTE a private  urgent Prepare the Java examination
 Item 5 :APPOINTMENT a private important 02/06/2018 Study hard
 Item 6 :APPOINTMENT xk private important 01/06/2018 Study hard
-Item 7 :TODO xk public urgent 12/06/2018 Java final exam.
+Item 7 :TODO xk public urgent 05/06/2018 Algorithms final exam
+Item 8 :TODO xk public jhk' 12/06/2018 klkj
+Item 9 :TODO xk public urgent 12/06/2018 Java final exam.
+Item 10 :TODO xk private urgent 12/06/2018 Find tutor
+Item 11 :TODO xk public negligible 08/06/2018 go shopping

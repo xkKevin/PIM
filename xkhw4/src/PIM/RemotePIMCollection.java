@@ -15,5 +15,5 @@ public interface RemotePIMCollection {
 	  public PIMCollection getItemsForDate(Date d, String owner) throws Exception;
 	  public PIMCollection getAll() throws Exception;
 	  public PIMCollection getAllByOwner(String owner) throws Exception;
-	  public boolean add(PIMEntity item) throws Exception;
+	  public boolean addItem(String item);
 }
