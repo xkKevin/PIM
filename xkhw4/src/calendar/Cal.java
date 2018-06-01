@@ -26,7 +26,7 @@ public class Cal {
             "December"};
     public static final String[] WEEKS = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
     public static int[][] printCalendar(int year,int month) throws ParseException {
-        System.out.println("Su"+"  "+"Mo"+"  "+"Tu"+"  "+"We"+"  "+"Th"+"  "+"Fr"+"  "+"Sa");
+        //System.out.println("Su"+"  "+"Mo"+"  "+"Tu"+"  "+"We"+"  "+"Th"+"  "+"Fr"+"  "+"Sa");
         String monthStr;
         if(month<10){
             monthStr = "0"+month;
@@ -51,11 +51,11 @@ public class Cal {
         for(int i=1;i<=7;i++){
             if(i>=dayOfWeek){
             	monthDay[0][i-1] = day;
-                System.out.print(" "+day+"  ");
+                //System.out.print(" "+day+"  ");
                 day++;
             } else{
             	monthDay[0][i] = 0;
-                System.out.print("    ");
+                //System.out.print("    ");
             }
         }
         System.out.println();
@@ -66,14 +66,14 @@ public class Cal {
                     break;
                 }
                 if(day<10){
-                    System.out.print(" "+day+"  ");
+                    //System.out.print(" "+day+"  ");
                 } else{
-                    System.out.print(day+"  ");
+                    //System.out.print(day+"  ");
                 }
                 monthDay[i][j] = day;
                 day++;
             }
-            System.out.println();
+            //System.out.println();
         }
         return monthDay;
     }

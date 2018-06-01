@@ -35,21 +35,26 @@ class MyFrame extends JFrame implements RemotePIMCollection {
     private monthJPanel monthJ;
 
     public MyFrame() throws Exception {
-    	cal.set(Calendar.DAY_OF_MONTH, 1);
-        content = this.getContentPane();
-        content.setLayout(new GridBagLayout());
-        PIMManager.load();
         owner = JOptionPane.showInputDialog(null, "Please input your account name");
-		addMenuBar();
-		addButton();
-		addAccount();
-		monthy = addMY();
-        addWeekTitle();
-        addMonth();
-        setTitle("PIMCalendar");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(360, 130, 1100, 750);
-        setVisible(true);
+        if (owner == null) {
+        }else if (owner.equals("")){
+        	JOptionPane.showMessageDialog(null, "Please input right account name!","Error Account!",JOptionPane.ERROR_MESSAGE);
+        }else {
+        	cal.set(Calendar.DAY_OF_MONTH, 1);
+            content = this.getContentPane();
+            content.setLayout(new GridBagLayout());
+            PIMManager.load();
+			addMenuBar();
+			addButton();
+			addAccount();
+			monthy = addMY();
+	        addWeekTitle();
+	        monthJ = addMonth();
+	        setTitle("PIMCalendar");
+	        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        setBounds(360, 130, 1100, 750);
+	        setVisible(true);
+        }
     }
 
     @Override
@@ -298,16 +303,18 @@ class MyFrame extends JFrame implements RemotePIMCollection {
             public void actionPerformed(ActionEvent arg0) {
                 PIMManager.load();
                 try {
-					monthJ.refresh();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+ 					monthJ.refresh();
+ 					monthJ.updateUI();
+ 					monthJ.repaint();
+ 				} catch (Exception exception ) {
+ 					// TODO Auto-generated catch block
+ 					exception.printStackTrace();
+ 				}
             }
         });
         
         JMenu create = new JMenu("Create");
-        JMenuItem ctodo = new JMenuItem("Todos");
+        JMenuItem ctodo = new JMenuItem("Todo");
         JMenuItem cnote = new JMenuItem("Note");
         JMenuItem cappointment = new JMenuItem("Appointment");
         JMenuItem ccontact = new JMenuItem("Contact");
@@ -321,77 +328,72 @@ class MyFrame extends JFrame implements RemotePIMCollection {
             	pm.listItem.add(new PIMTodo());
                 list.clear();
                 list.add(owner);
-                sf = JOptionPane.showInputDialog(null, "Choose shared flag: public and private");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Choose shared flag: public or private");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
-                sf = JOptionPane.showInputDialog(null, "Enter date for todo item(dd/MM/yyyy)");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Enter date for todo item(dd/MM/yyyy)");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
-                sf = JOptionPane.showInputDialog(null, "Enter todo text");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Enter todo text");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
-                sf = JOptionPane.showInputDialog(null, "Enter todo priority");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Enter todo priority");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
                 pm.itemId++;
                 pm.listItem.get(pm.listItem.size()-1).fromString(list);
+                try {
+ 					monthJ.refresh();
+ 					monthJ.updateUI();
+ 					monthJ.repaint();
+ 				} catch (Exception exception ) {
+ 					// TODO Auto-generated catch block
+ 					exception.printStackTrace();
+ 				}
                 JOptionPane.showMessageDialog(null, "Create the item successfully","Congratulation",JOptionPane.INFORMATION_MESSAGE);
-                PIMManager.save();
+                //PIMManager.save();
             }
         });
         cnote.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-            	pm.listItem.add(new PIMNote());
+            	PIMManager.listItem.add(new PIMNote());
                 list.clear();
                 list.add(owner);
-                sf = JOptionPane.showInputDialog(null, "Choose shared flag: public and private");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Choose shared flag: public or private");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
-                sf = JOptionPane.showInputDialog(null, "Enter note text");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Enter note text");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
-                sf = JOptionPane.showInputDialog(null, "Enter note priority");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Enter note priority");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
                 pm.itemId++;
                 pm.listItem.get(pm.listItem.size()-1).fromString(list);
+                try {
+ 					monthJ.refresh();
+ 					monthJ.updateUI();
+ 					monthJ.repaint();
+ 				} catch (Exception exception ) {
+ 					// TODO Auto-generated catch block
+ 					exception.printStackTrace();
+ 				}
                 JOptionPane.showMessageDialog(null, "Create the item successfully","Congratulation",JOptionPane.INFORMATION_MESSAGE);
-                PIMManager.save();
+                //PIMManager.save();
             }
         });
         cappointment.addActionListener(new ActionListener() {
@@ -399,42 +401,38 @@ class MyFrame extends JFrame implements RemotePIMCollection {
             	pm.listItem.add(new PIMAppointment());
                 list.clear();
                 list.add(owner);
-                sf = JOptionPane.showInputDialog(null, "Choose shared flag: public and private");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Choose shared flag: public or private");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
-                sf = JOptionPane.showInputDialog(null, "Enter date for appointment item(dd/MM/yyyy)");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Enter date for appointment item(dd/MM/yyyy)");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
-                sf = JOptionPane.showInputDialog(null, "Enter appointment description");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Enter appointment description");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
-                sf = JOptionPane.showInputDialog(null, "Enter appointment priority");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Enter appointment priority");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
                 pm.itemId++;
                 pm.listItem.get(pm.listItem.size()-1).fromString(list);
+                try {
+ 					monthJ.refresh();
+ 					monthJ.updateUI();
+ 					monthJ.repaint();
+ 				} catch (Exception exception ) {
+ 					// TODO Auto-generated catch block
+ 					exception.printStackTrace();
+ 				}
                 JOptionPane.showMessageDialog(null, "Create the item successfully","Congratulation",JOptionPane.INFORMATION_MESSAGE);
-                PIMManager.save();
+                //PIMManager.save();
             }
         });
         ccontact.addActionListener(new ActionListener() {
@@ -442,50 +440,43 @@ class MyFrame extends JFrame implements RemotePIMCollection {
             	pm.listItem.add(new PIMContact());
                 list.clear();
                 list.add(owner);
-                sf = JOptionPane.showInputDialog(null, "Choose shared flag: public and private");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Choose shared flag: public or private");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
-                sf = JOptionPane.showInputDialog(null, "Enter firstname for contact item");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Enter firstname for contact item");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
-                sf = JOptionPane.showInputDialog(null, "Enter lastname for contact item");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Enter lastname for contact item");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
-                sf = JOptionPane.showInputDialog(null, "Enter email for contact item");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Enter email for contact item");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
-                sf = JOptionPane.showInputDialog(null, "Enter contact priority");
-                if (sf == null || sf.equals("")) {
-                	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
-                	if (cf == 0) { //yes:0 no: 1
-                		return;
-                	}
+                sf = menuDialog("Enter contact priority");
+                if (sf == null) {
+                	return;
                 }
                 list.add(sf);
                 pm.itemId++;
                 pm.listItem.get(pm.listItem.size()-1).fromString(list);
+                try {
+ 					monthJ.refresh();
+ 					monthJ.updateUI();
+ 					monthJ.repaint();
+ 				} catch (Exception exception ) {
+ 					// TODO Auto-generated catch block
+ 					exception.printStackTrace();
+ 				}
                 JOptionPane.showMessageDialog(null, "Create the item successfully","Congratulation",JOptionPane.INFORMATION_MESSAGE);
-                PIMManager.save();
+                //PIMManager.save();
             }
         });
 
@@ -553,6 +544,9 @@ class MyFrame extends JFrame implements RemotePIMCollection {
             public void actionPerformed(ActionEvent arg0) {
             	try {
             		sf = JOptionPane.showInputDialog(null, "Please input account name");
+            		if (sf == null) {
+                    	return;
+                    }
             		new viewWindow(getAllByOwner(sf),sf + "'s all items");
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -572,6 +566,9 @@ class MyFrame extends JFrame implements RemotePIMCollection {
             public void actionPerformed(ActionEvent arg0) {
             	try {
             		sf = JOptionPane.showInputDialog(null, "Please input account name");
+            		if (sf == null) {
+                    	return;
+                    }
             		new viewWindow(getTodos(sf),sf + "'s todo items");
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -591,6 +588,9 @@ class MyFrame extends JFrame implements RemotePIMCollection {
             public void actionPerformed(ActionEvent arg0) {
             	try {
             		sf = JOptionPane.showInputDialog(null, "Please input account name");
+            		if (sf == null) {
+                    	return;
+                    }
             		new viewWindow(getNotes(sf),sf + "'s note items");
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -610,6 +610,9 @@ class MyFrame extends JFrame implements RemotePIMCollection {
             public void actionPerformed(ActionEvent arg0) {
             	try {
             		sf = JOptionPane.showInputDialog(null, "Please input account name");
+            		if (sf == null) {
+                    	return;
+                    }
             		new viewWindow(getAppointments(sf),sf + "'s appointment items");
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -629,6 +632,9 @@ class MyFrame extends JFrame implements RemotePIMCollection {
             public void actionPerformed(ActionEvent arg0) {
             	try {
             		sf = JOptionPane.showInputDialog(null, "Please input account name");
+            		if (sf == null) {
+                    	return;
+                    }
             		new viewWindow(getContacts(sf),sf + "'s contact items");
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -638,7 +644,10 @@ class MyFrame extends JFrame implements RemotePIMCollection {
         dateM.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             	try {
-            		sf = JOptionPane.showInputDialog(null, "Please input date");
+            		sf = JOptionPane.showInputDialog(null, "Please input date(dd/MM/yyyy)");
+            		if (sf == null) {
+                    	return;
+                    }
             		Date d = df.parse(sf);
             		new viewWindow(getItemsForDate(d),"My items on " + sf);
 				} catch (Exception e) {
@@ -650,7 +659,10 @@ class MyFrame extends JFrame implements RemotePIMCollection {
             public void actionPerformed(ActionEvent arg0) {
             	try {
             		sf = JOptionPane.showInputDialog(null, "Please input account name");
-            		Date d = df.parse(JOptionPane.showInputDialog(null, "Please input date"));
+            		if (sf == null) {
+                    	return;
+                    }
+            		Date d = df.parse(JOptionPane.showInputDialog(null, "Please input date(dd/MM/yyyy)"));
             		new viewWindow(getItemsForDate(d,sf),sf + "'s items on " + df.format(d));
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -664,6 +676,18 @@ class MyFrame extends JFrame implements RemotePIMCollection {
         setJMenuBar(menuBar);
     }
     
+	public String menuDialog(String text) {
+		sf = JOptionPane.showInputDialog(null, text);
+        while (sf == null || sf.equals("")) {
+        	int cf = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Warning!",JOptionPane.YES_NO_OPTION);
+        	if (cf == 0) { //yes:0 no: 1
+        		return null;
+        	}
+        	sf = JOptionPane.showInputDialog(null, text);
+        }
+        return sf;
+	}
+	
     public void addButton() {
     	JButton last = new JButton("Last Month");
         JButton next = new JButton("Next Month");
@@ -798,18 +822,7 @@ class MyFrame extends JFrame implements RemotePIMCollection {
 							text += "</html>";
 							//System.out.println(text);
 							jLabel.setText(text);
-							jLabel.addMouseListener(new MouseListener() {
-								
-								@Override
-								public void mouseReleased(MouseEvent e) {
-									// TODO Auto-generated method stub
-									
-								}
-								
-								@Override
-								public void mousePressed(MouseEvent e) {
-									
-								}
+							jLabel.addMouseListener(new MouseAdapter(){ //MouseListener is not interface
 								
 								@Override
 								public void mouseExited(MouseEvent e) {
@@ -841,17 +854,17 @@ class MyFrame extends JFrame implements RemotePIMCollection {
     	}
     }
     
-    public void addMonth() throws Exception{
-    	
+    public monthJPanel addMonth() throws Exception{
     	gConstraints.fill = GridBagConstraints.BOTH;
         gConstraints.gridx = 0;
         //gConstraints.gridwidth = 40;
         gConstraints.gridy = 2;
         gConstraints.weighty = 700;
         gConstraints.weightx = 700;
-        monthJ = new monthJPanel(cal,getAll());
-        monthJ.setBackground(Color.white);
-        this.add(monthJ,gConstraints);
+        monthJPanel mj = new monthJPanel(cal,getAll());
+        mj.setBackground(Color.white);
+        this.add(mj,gConstraints);
+        return mj;
     }
     
     class viewWindow extends JFrame {
@@ -863,18 +876,23 @@ class MyFrame extends JFrame implements RemotePIMCollection {
     	        this.add(scrollPane);
     	        this.setBounds(720, 250, 500, 300);
     	        this.setVisible(true);
+    	        viewWindow vw = this;
     	        MouseListener mouseListener = new MouseAdapter() {
     	            public void mouseClicked(MouseEvent e) {
+    	            	PIMEntity beforeModify = list.getSelectedValue();
+    	            	if (beforeModify == null) return; 
     	                if (e.getClickCount() == 2) {
-    	                    PIMEntity beforeModify = list.getSelectedValue();
-    	                    System.out.println(beforeModify);
+    	                	if (!beforeModify.owner.equals(owner)) { //Only the account owner can modify item!
+    	                		JOptionPane.showMessageDialog(null, "Only the account owner: "+ beforeModify.owner +" can modify this item!","Error!",JOptionPane.ERROR_MESSAGE);
+    	                		return; 
+    	                	}
     	                    int cf = JOptionPane.showConfirmDialog(null, "Are you sure to modify it?","Waring!",JOptionPane.WARNING_MESSAGE);
     	                	if (cf == 0) { //yes:0 no: 1
     	                		//PIMManager.listItem.remove(list.getSelectedValue());
     	                		
     	                		sf = JOptionPane.showInputDialog(null, "Input modification by the right format: ");
     	                		while (sf == null || sf.equals("")) {
-    	                        	int cf2 = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Waring!",JOptionPane.YES_NO_OPTION);
+    	                        	int cf2 = JOptionPane.showConfirmDialog(null, "Are you sure to cancel it?","Warning!",JOptionPane.YES_NO_OPTION);
     	                        	if (cf2 == 0) { //yes:0 no: 1
     	                        		return;
     	                        	}
@@ -890,17 +908,32 @@ class MyFrame extends JFrame implements RemotePIMCollection {
     	                		PIMManager.listItem.remove(beforeModify);
     	                		addItem(sf);
     	                		JOptionPane.showMessageDialog(null, "You modified it successfully!","Notice",JOptionPane.INFORMATION_MESSAGE);
+    	                		try {
+    	                			vw.removeAll();
+    	         					monthJ.refresh();
+    	         					monthJ.updateUI();
+    	         					monthJ.repaint();
+    	         				} catch (Exception exception ) {
+    	         					// TODO Auto-generated catch block
+    	         					exception.printStackTrace();
+    	         				}
     	                		return;
     	                	}
     	                }
     	                else if (e.isMetaDown()) {//Right Click
-    	                    int cf = JOptionPane.showConfirmDialog(null, "Are you sure to delete it?","Waring!",JOptionPane.WARNING_MESSAGE);
+    	                	if (!beforeModify.owner.equals(owner)) { //Only the account owner can modify item!
+    	                		JOptionPane.showMessageDialog(null, "Only the account owner: "+ beforeModify.owner +" can delete this item!","Error!",JOptionPane.ERROR_MESSAGE);
+    	                		return; 
+    	                	}
+    	                    int cf = JOptionPane.showConfirmDialog(null, "Are you sure to delete it?","Warning!",JOptionPane.WARNING_MESSAGE);
     	                	if (cf == 0) { //yes:0 no: 1
-    	                		PIMManager.listItem.remove(list.getSelectedValue());
+    	                		PIMManager.listItem.remove(beforeModify);
     	                		try {
-    	                			System.out.println("before refresh");
+    	                			//vw.refresh(collection);
+    	                			vw.removeAll();
     	         					monthJ.refresh();
-    	         					System.out.println("after refresh");
+    	         					monthJ.updateUI();
+    	         					monthJ.repaint();
     	         				} catch (Exception exception ) {
     	         					// TODO Auto-generated catch block
     	         					exception.printStackTrace();
