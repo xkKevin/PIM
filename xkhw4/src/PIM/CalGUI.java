@@ -25,7 +25,6 @@ public class CalGUI {
 class MyFrame extends JFrame implements RemotePIMCollection {
     Calendar cal = Calendar.getInstance();
 	private SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-	private GridBagConstraints gConstraints = new GridBagConstraints();
     public PIMCollection itemArr = new PIMCollection();
     public String owner;
     public String sf;
@@ -45,8 +44,8 @@ class MyFrame extends JFrame implements RemotePIMCollection {
             content.setLayout(new GridBagLayout());
             PIMManager.load();
 			addMenuBar();
-			addButton();
 			addAccount();
+			addButton();
 			monthy = addMY();
 	        addWeekTitle();
 	        monthJ = addMonth();
@@ -691,27 +690,31 @@ class MyFrame extends JFrame implements RemotePIMCollection {
     public void addButton() {
     	JButton last = new JButton("Last Month");
         JButton next = new JButton("Next Month");
-        gConstraints.fill = GridBagConstraints.NONE;
-        gConstraints.gridx = 1;
-        gConstraints.gridy = 0;
-        this.add(last, gConstraints);
+        JButton goTo = new JButton("Go To");
+        GridBagConstraints gc = new GridBagConstraints();
+        gc.fill = GridBagConstraints.WEST;
+        gc.gridx = 1;
+        gc.gridy = 0;
+        this.add(last, gc);
 
-        gConstraints.fill = GridBagConstraints.NONE;
-        gConstraints.gridx = 2;
-        gConstraints.gridy = 0;
-        this.add(next, gConstraints);
+        gc.gridx = 2;
+        this.add(next, gc);
+        
+        gc.gridx = 3;
+        this.add(goTo, gc);
+        
+        JTextField textMY = new JTextField("Year Month",8);
+        gc.gridx = 4;
+        this.add(textMY, gc);
         
         last.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				cal.set(Calendar.MONTH,cal.get(Calendar.MONTH) - 1);
-				monthy.setText(Cal.MONTHS[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR));
+				monthy.setText("   " + Cal.MONTHS[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR));
 				try {
-//					System.out.println("before refresh");
  					monthJ.refresh();
-// 					System.out.println("after refresh");
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -721,13 +724,32 @@ class MyFrame extends JFrame implements RemotePIMCollection {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				cal.set(Calendar.MONTH,cal.get(Calendar.MONTH) + 1);
-				monthy.setText(Cal.MONTHS[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR));
+				monthy.setText("   " + Cal.MONTHS[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.YEAR));
 				try {
-//					System.out.println("before refresh");
  					monthJ.refresh();
-// 					System.out.println("after refresh");
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+        
+        goTo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				sf = textMY.getText();
+				String[] d = sf.split("[\\s/]");
+				try {
+					int year = Integer.parseInt(d[0]);
+					int month = Integer.parseInt(d[1]);
+					cal.set(Calendar.MONTH,month - 1);
+					cal.set(Calendar.YEAR,year);
+					monthy.setText("   " + Cal.MONTHS[month - 1] + " " + cal.get(Calendar.YEAR));
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(null, "Date input error!","Warning",JOptionPane.WARNING_MESSAGE);
+				}
+				try {
+ 					monthJ.refresh();
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -738,20 +760,22 @@ class MyFrame extends JFrame implements RemotePIMCollection {
     	JLabel account = new JLabel("  Account: " + owner + "              ");
     	account.setFont(new Font("",1,40));
     	account.setForeground(Color.BLUE);
-    	gConstraints.fill = GridBagConstraints.WEST;
-        gConstraints.gridx = 0;
-        gConstraints.gridy = 0;
-    	this.add(account,gConstraints);
+    	GridBagConstraints gc = new GridBagConstraints();
+    	gc.fill = GridBagConstraints.WEST;
+        gc.gridx = 0;
+        gc.gridy = 0;
+    	this.add(account,gc);
     }
     
     public JLabel addMY() {
-		JLabel dateJ = new JLabel(Cal.MONTHS[cal.get(Calendar.MONTH)] + " " +  cal.get(Calendar.YEAR),JLabel.CENTER);
+		JLabel dateJ = new JLabel("   " + Cal.MONTHS[cal.get(Calendar.MONTH)] + " " +  cal.get(Calendar.YEAR),JLabel.CENTER);
     	dateJ.setFont(new Font("", 2, 30));
     	dateJ.setForeground(Color.orange);
-    	gConstraints.fill = GridBagConstraints.EAST;
-        gConstraints.gridx = 3;
-        gConstraints.gridy = 0;
-        this.add(dateJ,gConstraints);
+    	GridBagConstraints gc = new GridBagConstraints();
+    	gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.gridx = 5;
+        gc.gridy = 0;
+        this.add(dateJ,gc);
         return dateJ;
 	}
     
@@ -775,11 +799,12 @@ class MyFrame extends JFrame implements RemotePIMCollection {
             jpWeek.add(l, c);
         }
         jpWeek.setBackground(new Color(197, 228, 251));//red green blue 255 light blue
-    	gConstraints.fill = GridBagConstraints.HORIZONTAL;
-        gConstraints.gridx = 0;
-        gConstraints.gridwidth = 4;
-        gConstraints.gridy = 1;
-        this.add(jpWeek,gConstraints);
+        GridBagConstraints gc = new GridBagConstraints();
+    	gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.gridx = 0;
+        gc.gridwidth = 7;
+        gc.gridy = 1;
+        this.add(jpWeek,gc);
     }
     
     class monthJPanel extends JPanel {
@@ -855,15 +880,17 @@ class MyFrame extends JFrame implements RemotePIMCollection {
     }
     
     public monthJPanel addMonth() throws Exception{
-    	gConstraints.fill = GridBagConstraints.BOTH;
-        gConstraints.gridx = 0;
+    	GridBagConstraints gc = new GridBagConstraints();
+    	gc.fill = GridBagConstraints.BOTH;
+        gc.gridx = 0;
         //gConstraints.gridwidth = 40;
-        gConstraints.gridy = 2;
-        gConstraints.weighty = 700;
-        gConstraints.weightx = 700;
+        gc.gridy = 2;
+        gc.weighty = 700;
+        gc.weightx = 700;
+        gc.gridwidth = 7;
         monthJPanel mj = new monthJPanel(cal,getAll());
         mj.setBackground(Color.white);
-        this.add(mj,gConstraints);
+        this.add(mj,gc);
         return mj;
     }
     
